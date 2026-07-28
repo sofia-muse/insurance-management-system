@@ -149,3 +149,19 @@ InsuranceManagement.Core/
 InsuranceManagement.Infrastructure/
 README.md
 ```
+
+## Publish to GitHub (public repo)
+
+If `gh` is installed and authenticated:
+
+```bash
+gh auth login
+gh repo create insurance-management-api --public --source=. --remote=origin --push
+```
+
+Or create an empty public repo on GitHub, then:
+
+```bash
+git remote add origin https://github.com/<your-username>/insurance-management-api.git
+git push -u origin main
+```

@@ -1,6 +1,71 @@
-@InsuranceManagement.Api_HostAddress = http://localhost:5275
+@baseUrl = http://localhost:5275
+@aliceId = 11111111-1111-1111-1111-111111111111
+@seedPolicyId = 33333333-3333-3333-3333-333333333333
 
-GET {{InsuranceManagement.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### List customers
+GET {{baseUrl}}/api/customers
 
-###
+### Search customers
+GET {{baseUrl}}/api/customers?search=alice
+
+### Get customer with policies
+GET {{baseUrl}}/api/customers/{{aliceId}}
+
+### Create customer
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+
+{
+  "fullName": "Dana Levi",
+  "email": "dana.levi@example.com",
+  "phone": "+1-555-0199",
+  "dateOfBirth": "1990-06-15",
+  "address": "10 Herzl St"
+}
+
+### Update customer
+PUT {{baseUrl}}/api/customers/{{aliceId}}
+Content-Type: application/json
+
+{
+  "fullName": "Alice Johnson",
+  "email": "alice.johnson@example.com",
+  "phone": "+1-555-0101",
+  "dateOfBirth": "1988-04-12",
+  "address": "12 Maple Street, Springfield"
+}
+
+### Issue policy for Alice
+POST {{baseUrl}}/api/customers/{{aliceId}}/policies
+Content-Type: application/json
+
+{
+  "type": "Health",
+  "premium": 890.50,
+  "startDate": "2026-01-01",
+  "endDate": "2026-12-31",
+  "coverageDetails": "Hospital and outpatient coverage"
+}
+
+### List policies (filter by type)
+GET {{baseUrl}}/api/policies?type=Car
+
+### List policies for customer
+GET {{baseUrl}}/api/policies?customerId={{aliceId}}
+
+### Get policy by id
+GET {{baseUrl}}/api/policies/{{seedPolicyId}}
+
+### Update policy
+PUT {{baseUrl}}/api/policies/{{seedPolicyId}}
+Content-Type: application/json
+
+{
+  "premium": 1300.00,
+  "startDate": "2026-01-01",
+  "endDate": "2026-12-31",
+  "coverageDetails": "Comprehensive auto coverage including collision and liability."
+}
+
+### Cancel policy
+POST {{baseUrl}}/api/policies/{{seedPolicyId}}/cancel
