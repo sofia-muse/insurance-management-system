@@ -1,0 +1,27 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## SQLite
+*.db
+*.db-shm
+*.db-wal
+
+## IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+## Build / logs
+*.log
+TestResults/
+
+# Challenge brief (not part of the solution)
+*.docx
