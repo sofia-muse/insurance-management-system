@@ -28,3 +28,18 @@ public record PolicyResponse(
     DateTime CreatedAt,
     DateTime UpdatedAt,
     DateTime? CancelledAt);
+
+public record PolicyEventResponse(
+    Guid Id,
+    Guid PolicyId,
+    Guid CustomerId,
+    string EventType,
+    DateTime OccurredAt,
+    string? Note);
+
+public record ErrorResponse(
+    string Title,
+    int Status,
+    string Code,
+    string Detail,
+    string TraceId);

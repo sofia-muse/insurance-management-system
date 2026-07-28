@@ -7,10 +7,12 @@ obj/
 *.sln.docstates
 .vs/
 
-## SQLite
+## Local databases
 *.db
 *.db-shm
 *.db-wal
+*.mdf
+*.ldf
 
 ## IDE / OS
 .idea/

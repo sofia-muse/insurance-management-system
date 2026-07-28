@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsuranceManagement.Infrast
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsuranceManagement.Api", "InsuranceManagement.Api\InsuranceManagement.Api.csproj", "{252134C8-6E0C-44BC-B00C-2DEC9A33013B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsuranceManagement.Tests", "InsuranceManagement.Tests\InsuranceManagement.Tests.csproj", "{057155EA-6EC6-42A7-8029-606A5B08F7DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{252134C8-6E0C-44BC-B00C-2DEC9A33013B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{252134C8-6E0C-44BC-B00C-2DEC9A33013B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{252134C8-6E0C-44BC-B00C-2DEC9A33013B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{057155EA-6EC6-42A7-8029-606A5B08F7DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{057155EA-6EC6-42A7-8029-606A5B08F7DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{057155EA-6EC6-42A7-8029-606A5B08F7DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{057155EA-6EC6-42A7-8029-606A5B08F7DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

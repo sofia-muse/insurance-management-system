@@ -29,21 +29,28 @@ public class ExceptionHandlingMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var (statusCode, title) = exception switch
+        var (statusCode, title, code, detail) = exception switch
         {
-            NotFoundException => (HttpStatusCode.NotFound, "Not Found"),
-            ConflictException => (HttpStatusCode.Conflict, "Conflict"),
-            BusinessRuleException => (HttpStatusCode.BadRequest, "Business Rule Violation"),
-            _ => (HttpStatusCode.InternalServerError, "Internal Server Error")
+            NotFoundException ex => (HttpStatusCode.NotFound, "Not Found", ex.Code, ex.Message),
+            ConflictException ex => (HttpStatusCode.Conflict, "Conflict", ex.Code, ex.Message),
+            BusinessRuleException ex => (HttpStatusCode.BadRequest, "Business Rule Violation", ex.Code, ex.Message),
+            ApiException ex => (HttpStatusCode.BadRequest, "Request Error", ex.Code, ex.Message),
+            _ => (HttpStatusCode.InternalServerError, "Internal Server Error", "UNEXPECTED_ERROR", "An unexpected error occurred.")
         };
 
         if (statusCode == HttpStatusCode.InternalServerError)
         {
-            _logger.LogError(exception, "Unhandled exception");
+            _logger.LogError(exception, "Unhandled exception traceId={TraceId}", context.TraceIdentifier);
         }
         else
         {
-            _logger.LogWarning(exception, "Handled domain exception");
+            _logger.LogWarning(exception, "Handled exception code={Code} traceId={TraceId}", code, context.TraceIdentifier);
+        }
+
+        if (context.Response.HasStarted)
+        {
+            _logger.LogWarning("Response already started; skipping standardized exception payload traceId={TraceId}", context.TraceIdentifier);
+            return;
         }
 
         context.Response.ContentType = "application/json";
@@ -53,9 +60,9 @@ public class ExceptionHandlingMiddleware
         {
             title,
             status = (int)statusCode,
-            detail = statusCode == HttpStatusCode.InternalServerError
-                ? "An unexpected error occurred."
-                : exception.Message
+            code,
+            detail,
+            traceId = context.TraceIdentifier
         };
 
         await context.Response.WriteAsync(JsonSerializer.Serialize(payload));

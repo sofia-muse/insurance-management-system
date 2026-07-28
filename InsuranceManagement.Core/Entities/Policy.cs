@@ -16,6 +16,7 @@ public class Policy
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? CancelledAt { get; set; }
+    public byte[] RowVersion { get; set; } = Array.Empty<byte>();
 
     public Customer Customer { get; set; } = null!;
 }

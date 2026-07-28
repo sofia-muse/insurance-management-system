@@ -11,7 +11,7 @@ public class CreateCustomerRequestValidator : AbstractValidator<CreateCustomerRe
         RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
         RuleFor(x => x.Phone).NotEmpty().MaximumLength(50);
         RuleFor(x => x.Address).NotEmpty().MaximumLength(500);
-        RuleFor(x => x.DateOfBirth).LessThan(DateOnly.FromDateTime(DateTime.UtcNow));
+        this.ApplyCommonCustomerRules(x => x.DateOfBirth);
     }
 }
 
@@ -23,6 +23,6 @@ public class UpdateCustomerRequestValidator : AbstractValidator<UpdateCustomerRe
         RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
         RuleFor(x => x.Phone).NotEmpty().MaximumLength(50);
         RuleFor(x => x.Address).NotEmpty().MaximumLength(500);
-        RuleFor(x => x.DateOfBirth).LessThan(DateOnly.FromDateTime(DateTime.UtcNow));
+        this.ApplyCommonCustomerRules(x => x.DateOfBirth);
     }
 }

@@ -1,8 +1,8 @@
 namespace InsuranceManagement.Core.Exceptions;
 
-public class ConflictException : Exception
+public class ConflictException : ApiException
 {
-    public ConflictException(string message) : base(message)
+    public ConflictException(string code, string message) : base(code, message)
     {
     }
 }

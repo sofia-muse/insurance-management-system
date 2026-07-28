@@ -1,8 +1,8 @@
 namespace InsuranceManagement.Core.Exceptions;
 
-public class NotFoundException : Exception
+public class NotFoundException : ApiException
 {
-    public NotFoundException(string message) : base(message)
+    public NotFoundException(string code, string message) : base(code, message)
     {
     }
 }
