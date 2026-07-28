@@ -27,3 +27,14 @@ TestResults/
 
 # Challenge brief (not part of the solution)
 *.docx
+
+## Secrets / local env
+.env
+.env.*
+!.env.example
+**/secrets.json
+**/appsettings.*.local.json
+*.usersecrets
+
+## Local test artifacts
+test-output.txt

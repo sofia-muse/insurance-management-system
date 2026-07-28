@@ -239,9 +239,37 @@ public class PolicyService : IPolicyService
             operation.StartsWith("issue:", StringComparison.OrdinalIgnoreCase)
             && IsStaleCarNormalizationConcurrency(ex))
         {
+            // Concurrent writer may already have expired/updated the stale car.
+            // Reload, re-apply expiration if still needed, then retry once with
+            // the same conflict mapping as the primary save path.
             await RetryStaleCarNormalizationAsync(ex, cancellationToken);
-            await _db.SaveChangesAsync(cancellationToken);
-            return null;
+            try
+            {
+                await _db.SaveChangesAsync(cancellationToken);
+                return null;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw PolicyConcurrentModification();
+            }
+            catch (DbUpdateException retryEx) when (IsActiveCarUniqueConstraintViolation(retryEx))
+            {
+                throw ActiveCarPolicyExists();
+            }
+            catch (DbUpdateException retryEx) when (
+                !string.IsNullOrWhiteSpace(idempotencyKey) &&
+                IsIdempotencyUniqueConstraintViolation(retryEx))
+            {
+                var existing = await GetIdempotencyAsync(operation, idempotencyKey, cancellationToken);
+                if (existing is null)
+                {
+                    throw;
+                }
+
+                ValidateFingerprint(existing, idempotencyFingerprint);
+                _db.ChangeTracker.Clear();
+                return existing.ResponseEntityId;
+            }
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -305,11 +333,38 @@ public class PolicyService : IPolicyService
             && p.EndDate < today);
     }
 
-    private static async Task RetryStaleCarNormalizationAsync(DbUpdateConcurrencyException ex, CancellationToken cancellationToken)
+    private async Task RetryStaleCarNormalizationAsync(DbUpdateConcurrencyException ex, CancellationToken cancellationToken)
     {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var now = DateTime.UtcNow;
+
         foreach (var entry in ex.Entries)
         {
             await entry.ReloadAsync(cancellationToken);
+            if (entry.Entity is not Policy policy)
+            {
+                continue;
+            }
+
+            // Drop the pre-failure pending Updated event so a successful retry
+            // records at most one audit event for this logical expiration.
+            foreach (var pendingEvent in _db.ChangeTracker.Entries<PolicyEvent>()
+                .Where(e => e.State == EntityState.Added && e.Entity.PolicyId == policy.Id)
+                .ToList())
+            {
+                pendingEvent.State = EntityState.Detached;
+            }
+
+            // Another request may already have expired the row; only re-apply
+            // expiration when the reloaded row is still a stale active car.
+            if (policy.Type == PolicyType.Car
+                && policy.Status == PolicyStatus.Active
+                && policy.EndDate < today)
+            {
+                policy.Status = PolicyStatus.Expired;
+                policy.UpdatedAt = now;
+                AddPolicyEvent(policy, PolicyEventType.Updated, now);
+            }
         }
     }
 
