@@ -1,5 +1,13 @@
 # Insurance Management System - Backend API
 
+## Current status · 7 November 2026
+
+Backend API source is on the repository default branch, `feature/api-hardening-and-tests`. No directly linked Vercel deployment of this API was verified. The related [Coverdesk browser demo](https://coverdesk.vercel.app/) is READY on Vercel and was opened successfully with fictional data. It resets on refresh and is not evidence of a running .NET API; its frontend source is not present on this branch. [Coverdesk on Vercel](https://vercel.com/sofia-muses-projects/coverdesk).
+
+![Related Coverdesk browser simulation with fictional data](docs/screenshots/coverdesk-demo.jpg)
+
+Captures from 7 November 2026; existing portfolio captures are explicitly labeled above.
+
 Backend service (API) for insurance agents to manage policyholders and policy lifecycle with auditability and reliable business rules.
 
 ## Quick System Summary
@@ -25,8 +33,9 @@ Backend service (API) for insurance agents to manage policyholders and policy li
 ## Setup and Run
 
 ```bash
-git clone <your-repo-url>
-cd "Backend Challenge - Insurance Management System"
+git clone https://github.com/sofia-muse/insurance-management-system.git
+cd insurance-management-system
+git checkout feature/api-hardening-and-tests
 dotnet restore
 dotnet run --project InsuranceManagement.Api --launch-profile http
 ```
